@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
 }
 
 .App-logo {
@@ -19,4 +21,9 @@
 
 .App-link {
   color: #09d3ac;
+}
+
+.App > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
