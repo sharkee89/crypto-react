@@ -4,12 +4,15 @@ import './Navbar.css';
 class Navbar extends Component {
     render() {
         return (
-            <ul className="Navbar">
-                <li>Bitcoin</li>
-                <li>Etherium</li>
-                <li>Safex</li>
-                <li>Blue</li>
-            </ul>
+            <div>
+                <h3>Crypto</h3>
+                <ul className="Navbar">
+                    <li>Bitcoin</li>
+                    <li>Etherium</li>
+                    <li>Safex</li>
+                    <li>Blue</li>
+                </ul>
+            </div>
         )
     }
 }
