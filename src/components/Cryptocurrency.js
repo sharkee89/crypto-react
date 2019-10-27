@@ -1,14 +1,16 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-export class Cryptocurrency extends Component {
+class Cryptocurrency extends Component {
     render() {
         return (
-            <div>
-                <h3>{this.props.cryptocurrency.name}</h3>
-                <h5>{this.props.cryptocurrency.price}</h5>
-            </div>
+            <h1>{this.props.cryptocurrency.name}</h1>
         )
     }
 }
 
-export default Cryptocurrency
+Cryptocurrency.propTypes = {
+    cryptocurrency: PropTypes.object.isRequired
+}
+
+export default Cryptocurrency;
