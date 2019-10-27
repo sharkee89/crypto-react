@@ -8,7 +8,8 @@ class NavbarItem extends Component {
 
     getStyle = () => {
         return {
-            backgroundColor: this.props.navbarItem.selected ? 'rgba(255, 255, 255, .6)' : ''
+            backgroundColor: this.props.navbarItem.selected ? 'rgba(255, 255, 255, .6)' : '',
+            boxShadow: this.props.navbarItem.selected ? '0px 3px darkslategrey' : 'none'    
         }
     }
 
