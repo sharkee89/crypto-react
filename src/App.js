@@ -11,47 +11,55 @@ class App extends Component {
     cryptocurrency: {
       prices: []
     },
-    graphData: Config.graphSampleData,
+    graphData: {},
     isLoading: true
   }
 
   componentDidMount() {
     axios.get(`${Config.domain}/cryptocurrencies/BTC/prices`)
       .then(res => {
-        let sdata = {
-          id: res.data[0].name,
-          color: 'hsl(1, 70%, 50%)',
-          data: res.data.map(price => {
-            return {x: `${new Date(price.date).getDate()}.${new Date(price.date).getMonth() + 1}.${new Date(price.date).getFullYear()} ${new Date(price.date).getHours()}:${new Date(price.date).getMinutes()}`, y: price.price}
-          })
+        let tempGraphData = {
+          labels: res.data.map((price) => {
+            return `${new Date(price.date).getDate()}.${new Date(price.date).getMonth() + 1}.${new Date(price.date).getFullYear()} ${new Date(price.date).getHours()}:${new Date(price.date).getMinutes()}`;
+          }),
+          datasets: [{
+            label: `${res.data[0].name} Prices`,
+            data: res.data.map((price) => {
+              return price.price;
+            })
+          }]
         };
         this.setState({
-          cryptocurrency: {name: res.data[0].name, prices: res.data},
+          cryptocurrency: { name: res.data[0].name, prices: res.data },
           isLoading: false,
-          graphData: [sdata]
+          graphData: tempGraphData
         });
       });
   }
 
   onSelectMenuItem = (symbol) => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
       .then(res => {
-        let sdata = {
-          id: res.data[0].name,
-          color: 'hsl(1, 70%, 50%)',
-          data: res.data.map(price => {
-            return {x: `${new Date(price.date).getDate()}.${new Date(price.date).getMonth() + 1}.${new Date(price.date).getFullYear()} ${new Date(price.date).getHours()}:${new Date(price.date).getMinutes()}`, y: price.price}
-          })
+        let tempGraphData = {
+          labels: res.data.map((price) => {
+            return `${new Date(price.date).getDate()}.${new Date(price.date).getMonth() + 1}.${new Date(price.date).getFullYear()} ${new Date(price.date).getHours()}:${new Date(price.date).getMinutes()}`;
+          }),
+          datasets: [{
+            label: `${res.data[0].name} Prices`,
+            data: res.data.map((price) => {
+              return price.price;
+            })
+          }]
         };
-        this.setState({ 
+        this.setState({
           navbarItems: this.state.navbarItems.map(item => {
             item.selected = item.symbol === symbol;
             return item;
           }),
-          cryptocurrency: {name: res.data[0].name, symbol: symbol, prices: res.data},
+          cryptocurrency: { name: res.data[0].name, symbol: symbol, prices: res.data },
           isLoading: false,
-          graphData: [sdata]
+          graphData: tempGraphData
         });
       })
   }
@@ -64,7 +72,7 @@ class App extends Component {
         </nav>
         <div className="details-section">
           <div className={`main-section ${this.state.isLoading ? 'is-loading' : ''}`}>
-            <Cryptocurrency cryptocurrency={this.state.cryptocurrency} graphData={this.state.graphData}/>
+            <Cryptocurrency cryptocurrency={this.state.cryptocurrency} graphData={this.state.graphData} />
           </div>
           <div className={`loader ${this.state.isLoading ? 'is-loading' : ''}`}>
             <div className="icon"></div>

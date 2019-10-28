@@ -7,11 +7,12 @@
   padding: 0;
   margin: 0;
   background-color: #495D70;
-  height: 100vh;
+  height: 100%;
   color: white;
 }
 .details-section {
   position: relative;
+  margin: 0 1em;
 }
 .main-section.is-loading {
   visibility: hidden;
