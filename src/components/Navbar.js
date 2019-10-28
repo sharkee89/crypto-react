@@ -7,7 +7,7 @@ class Navbar extends Component {
         return (
             <div>
                 <h3>Crypto</h3>
-                <ul className="Navbar">
+                <ul className="navbar">
                     {this.props.navbarItems.map((navbarItem) => {
                         return <NavbarItem key={navbarItem.id} navbarItem={navbarItem} onSelectMenuItem={this.props.onSelectMenuItem} />;
                     })}

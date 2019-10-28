@@ -16,7 +16,7 @@ class Cryptocurrency extends Component {
                         <h1>{this.props.cryptocurrency.name}</h1>
                     </div>
                     <div className="chart">
-                    <ResponsiveLine
+                    {/* <ResponsiveLine
                         data={this.props.graphData}
                         margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
                         xScale={{ type: 'point' }}
@@ -75,7 +75,7 @@ class Cryptocurrency extends Component {
                                 ]
                             }
                         ]}
-                    />
+                    /> */}
                     </div>
                 </div>
                 <div className="prices">
