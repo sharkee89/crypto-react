@@ -10,28 +10,47 @@ class App extends Component {
     navbarItems: Config.NavbarItems,
     cryptocurrency: {
       prices: []
-    }
+    },
+    graphData: Config.graphSampleData,
+    isLoading: true
   }
 
   componentDidMount() {
     axios.get(`${Config.domain}/cryptocurrencies/BTC/prices`)
       .then(res => {
-        this.setState({cryptocurrency: {name: res.data[0].name, prices: res.data}});
+        this.setState({
+          cryptocurrency: {name: res.data[0].name, prices: res.data},
+          isLoading: false,
+          graphData: [{
+            id: res.data[0].name,
+            color: 'hsl(1, 70%, 50%)',
+            data: res.data.map(price => {
+              return {x: price.date, y: price.price}
+            })
+          }]
+        });
       });
   }
 
   onSelectMenuItem = (symbol) => {
+    this.setState({isLoading: true});
     axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
       .then(res => {
-        this.setState({ navbarItems: this.state.navbarItems.map(item => {
-            if (item.symbol === symbol) {
-                item.selected = true;
-            } else {
-                item.selected = false
-            }
+        this.setState({ 
+          navbarItems: this.state.navbarItems.map(item => {
+            item.selected = item.symbol === symbol;
             return item;
-        })});
-        this.setState({cryptocurrency: {name: res.data[0].name, symbol: symbol, prices: res.data}});
+          }),
+          cryptocurrency: {name: res.data[0].name, symbol: symbol, prices: res.data},
+          isLoading: false,
+          graphData: [{
+            id: res.data[0].name,
+            color: 'hsl(1, 70%, 50%)',
+            data: res.data.map(price => {
+              return {x: price.date, y: price.price}
+            })
+          }]
+        });
       })
   }
 
@@ -41,8 +60,13 @@ class App extends Component {
         <nav>
           <Navbar navbarItems={this.state.navbarItems} onSelectMenuItem={this.onSelectMenuItem} />
         </nav>
-        <div>
-          <Cryptocurrency cryptocurrency={this.state.cryptocurrency} />
+        <div className="details-section">
+          <div className={`main-section ${this.state.isLoading ? 'is-loading' : ''}`}>
+            <Cryptocurrency cryptocurrency={this.state.cryptocurrency} graphData={this.state.graphData}/>
+          </div>
+          <div className={`loader ${this.state.isLoading ? 'is-loading' : ''}`}>
+            <div className="icon"></div>
+          </div>
         </div>
       </div>
     )

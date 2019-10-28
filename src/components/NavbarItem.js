@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 
 class NavbarItem extends Component {
 
-    onSelectMenuItem = () => {
-        console.log(this.props.navbarItem);
-    }
-
     getStyle = () => {
         return {
             backgroundColor: this.props.navbarItem.selected ? 'rgba(255, 255, 255, .6)' : '',
