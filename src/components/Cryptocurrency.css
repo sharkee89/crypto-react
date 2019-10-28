@@ -1,6 +1,3 @@
-.cryptocurrency {
-    margin: 0 1em;
-}
 .main-data {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -10,4 +7,17 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 1em;
+}
+@media only screen and (max-width: 834px) {
+    .main-data {
+        grid-template-columns: 1fr;
+    }
+    .prices {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media only screen and (max-width: 414px) {
+    .prices {
+        grid-template-columns: 1fr;
+    }
 }
