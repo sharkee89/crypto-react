@@ -1,27 +1,38 @@
 import React, { Component } from 'react';
 import Navbar from './components/Navbar';
 import Cryptocurrency from './components/Cryptocurrency';
-import NavbarItems from './config/config';
-
-import logo from './logo.svg';
+import Config from './config/config';
+import axios from 'axios';
 import './App.css';
 
 class App extends Component {
   state = {
-    navbarItems: NavbarItems,
-    cryptocurrency: { id: 1, name: 'Bitcoin', price: 8654 }
+    navbarItems: Config.NavbarItems,
+    cryptocurrency: {
+      prices: []
+    }
+  }
+
+  componentDidMount() {
+    axios.get(`${Config.domain}/cryptocurrencies/BTC/prices`)
+      .then(res => {
+        this.setState({cryptocurrency: {name: res.data[0].name, prices: res.data}});
+      });
   }
 
   onSelectMenuItem = (symbol) => {
-    console.log(symbol);
-    this.setState({ navbarItems: this.state.navbarItems.map(item => {
-        if (item.symbol === symbol) {
-            item.selected = true;
-        } else {
-            item.selected = false
-        }
-        return item;
-    })});
+    axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
+      .then(res => {
+        this.setState({ navbarItems: this.state.navbarItems.map(item => {
+            if (item.symbol === symbol) {
+                item.selected = true;
+            } else {
+                item.selected = false
+            }
+            return item;
+        })});
+        this.setState({cryptocurrency: {name: res.data[0].name, symbol: symbol, prices: res.data}});
+      })
   }
 
   render() {

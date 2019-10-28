@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import NavbarItems from '../config/config';
 import NavbarItem from './NavbarItem';
 import './Navbar.css';
 
 class Navbar extends Component {
-
     render() {
         return (
             <div>
