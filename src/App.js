@@ -8,9 +8,8 @@ import './App.css';
 class App extends Component {
   state = {
     navbarItems: Config.NavbarItems,
-    cryptocurrency: {
-      prices: []
-    },
+    cryptocurrency: {},
+    prices: [],
     graphData: {},
     isLoading: true
   }
@@ -37,19 +36,17 @@ class App extends Component {
       symbol: response ? response.data.symbol : null,
       marketShare: response ? response.data.marketShare : null,
       lastUpdated: response ? response.data.lastUpdated : null,
-      prices: res.data 
     }
   }
 
-  getStateForApp = (response, res, tempGraphData, symbol) => {
+  getStateForApp = (response, res, symbol) => {
     return {
       navbarItems: this.state.navbarItems.map(item => {
         item.selected = item.symbol === symbol;
         return item;
       }),
       cryptocurrency: this.getCryptocurrencyState(response, res),
-      isLoading: false,
-      graphData: tempGraphData
+      isLoading: false
     }
   }
 
@@ -67,7 +64,9 @@ class App extends Component {
     axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
       .then(res => {
         let tempGraphData = this.getGraphData(res);
-        this.setState(this.getStateForApp(response, res, tempGraphData, symbol));
+        this.setState(this.getStateForApp(response, res, symbol));
+        this.setState({prices: res.data});
+        this.setState({graphData: tempGraphData});
       });
   }
 
@@ -88,7 +87,7 @@ class App extends Component {
         </nav>
         <div className="details-section">
           <div className={`main-section ${this.state.isLoading ? 'is-loading' : ''}`}>
-            <Cryptocurrency cryptocurrency={this.state.cryptocurrency} graphData={this.state.graphData} />
+            <Cryptocurrency cryptocurrency={this.state.cryptocurrency} prices={this.state.prices} graphData={this.state.graphData} />
           </div>
           <div className={`loader ${this.state.isLoading ? 'is-loading' : ''}`}>
             <div className="icon"></div>

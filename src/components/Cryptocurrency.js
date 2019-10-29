@@ -8,7 +8,6 @@ import PriceChart from './PriceChart';
 
 class Cryptocurrency extends Component {
     render() {
-        console.log(this.props.cryptocurrency);
         return (
             <div className="cryptocurrency">
                 <div className="main-data">
@@ -24,7 +23,7 @@ class Cryptocurrency extends Component {
                     </div>
                 </div>
                 <div className="prices">
-                    {this.props.cryptocurrency.prices.map((price) => {
+                    {this.props.prices.map((price) => {
                         return <CryptocurrencyPrice key={price['_id']} price={price}/>;
                     })}
                 </div>

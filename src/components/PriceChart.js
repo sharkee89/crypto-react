@@ -4,7 +4,6 @@ import { Line } from 'react-chartjs-2';
 
 class PriceChart extends React.Component {
     render() {
-        console.log(this.props.graphData);
         return (
             <Line
                 data={this.props.graphData}
