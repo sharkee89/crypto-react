@@ -13,13 +13,11 @@ class Cryptocurrency extends Component {
             <div className="cryptocurrency">
                 <div className="main-data">
                     <div className="details">
-                        
-                            <div><h1>{this.props.cryptocurrency.name}</h1></div>
-                            <div className="rank">#{this.props.cryptocurrency.rank}</div>
-                            <div><h3>${this.props.cryptocurrency.price}</h3></div>
-                            <div>{this.props.cryptocurrency.marketShare}</div>
-                            <div>{this.props.cryptocurrency.lastUpdated}</div>
-                        
+                        <div><h1>{this.props.cryptocurrency.name}</h1></div>
+                        {this.props.cryptocurrency.rank ? <div className="rank">#{this.props.cryptocurrency.rank}</div> : null}
+                        {this.props.cryptocurrency.price ? <div><h3>${this.props.cryptocurrency.price}</h3></div>: null}
+                        {this.props.cryptocurrency.marketShare ? <div>{this.props.cryptocurrency.marketShare}</div>: null}
+                        {this.props.cryptocurrency.lastUpdated ? <div>{this.props.cryptocurrency.lastUpdated}</div>: null}
                     </div>
                     <div className="chart">
                         <PriceChart graphData={this.props.graphData} />

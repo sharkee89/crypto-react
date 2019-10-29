@@ -32,11 +32,11 @@ class App extends Component {
   getCryptocurrencyState = (response, res) => {
     return { 
       name: res.data[0].name,
-      price: response.data.price,
-      rank: response.data.rank,
-      symbol: response.data.symbol,
-      marketShare: response.data.marketShare,
-      lastUpdated: response.data.lastUpdated,
+      price: response ? response.data.price : null,
+      rank: response ? response.data.rank : null,
+      symbol: response ? response.data.symbol : null,
+      marketShare: response ? response.data.marketShare : null,
+      lastUpdated: response ? response.data.lastUpdated : null,
       prices: res.data 
     }
   }
@@ -60,6 +60,13 @@ class App extends Component {
           .then(res => {
             let tempGraphData = this.getGraphData(res);
             this.setState(this.getStateForApp(response, res, tempGraphData, symbol));
+          });
+      })
+      .catch(error => {
+        axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
+          .then(res => {
+            let tempGraphData = this.getGraphData(res);
+            this.setState(this.getStateForApp(null, res, tempGraphData, symbol));
           });
       });
   }
