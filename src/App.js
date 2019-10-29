@@ -28,9 +28,9 @@ class App extends Component {
     };
   }
 
-  getCryptocurrencyState = (response, res) => {
+  getCryptocurrencyState = (response) => {
     return { 
-      name: res.data[0].name,
+      name: response.data.name,
       price: response ? response.data.price : null,
       rank: response ? response.data.rank : null,
       symbol: response ? response.data.symbol : null,
@@ -39,35 +39,52 @@ class App extends Component {
     }
   }
 
-  getStateForApp = (response, res, symbol) => {
+  getStateForApp = (response, symbol) => {
     return {
-      navbarItems: this.state.navbarItems.map(item => {
-        item.selected = item.symbol === symbol;
-        return item;
-      }),
-      cryptocurrency: this.getCryptocurrencyState(response, res),
+      cryptocurrency: this.getCryptocurrencyState(response),
       isLoading: false
     }
   }
 
-  getCryptocurrencyData(symbol) {
-    axios.get(`${Config.domain}/cryptocurrencies/${symbol}`)
-      .then(response => {
-        this.getPrices(response, symbol);
-      })
-      .catch(error => {
-        this.getPrices(null, symbol);
-      });
+  getStateForNavbarItems = (symbol) => {
+    return this.state.navbarItems.map(item => {
+      item.selected = item.symbol === symbol;
+      return item;
+    })
   }
 
-  getPrices(response, symbol) {
-    axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
-      .then(res => {
-        let tempGraphData = this.getGraphData(res);
-        this.setState(this.getStateForApp(response, res, symbol));
-        this.setState({prices: res.data});
-        this.setState({graphData: tempGraphData});
-      });
+  getCryptocurrencyData(symbol) {
+    if (localStorage.getItem(`cryptocurrency-${symbol}`)) {
+      this.setState({cryptocurrency: JSON.parse(localStorage.getItem(`cryptocurrency-${symbol}`)), isLoading: false});
+      this.setState({navbarItems: this.getStateForNavbarItems(symbol)})
+    } else {
+      axios.get(`${Config.domain}/cryptocurrencies/${symbol}`)
+        .then(response => {
+          this.setState(this.getStateForApp(response, symbol));
+          this.setState({navbarItems: this.getStateForNavbarItems(symbol)})
+          localStorage.setItem(`cryptocurrency-${symbol}`, JSON.stringify(this.state.cryptocurrency));
+          localStorage.setItem(`cryptocurrencyDate-${symbol}`, Date.now());
+        })
+        .catch(error => {
+          // this.getPrices(null, symbol);
+        });
+    }
+    this.getPrices(symbol);
+  }
+
+  getPrices(symbol) {
+    if (localStorage.getItem(`prices-${symbol}`)) {
+      this.setState({prices: JSON.parse(localStorage.getItem(`prices-${symbol}`)), graphData: JSON.parse(localStorage.getItem(`graphData-${symbol}`))});
+    } else {
+      axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
+        .then(res => {
+          let tempGraphData = this.getGraphData(res);
+          this.setState({prices: res.data, graphData: tempGraphData});
+          localStorage.setItem(`prices-${symbol}`, JSON.stringify(this.state.prices));
+          localStorage.setItem(`graphData-${symbol}`, JSON.stringify(this.getGraphData(res)));
+          localStorage.setItem(`pricesDate-${symbol}`, Date.now());
+        });
+    }
   }
 
   componentDidMount() {
