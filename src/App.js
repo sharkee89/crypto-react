@@ -53,8 +53,18 @@ class App extends Component {
     })
   }
 
+  getTooOld(lsItem, expiryInMinutes, symbol) {
+    const date = localStorage.getItem(`${lsItem}-${symbol}`);
+    const cryptocurrencyDate = date && new Date(parseInt(date));
+    const now = new Date();
+    const dataAge = Math.round((now - cryptocurrencyDate) / (1000 * 60));
+    const tooOld = dataAge >= expiryInMinutes;
+    return tooOld;
+  }
+
   getCryptocurrencyData(symbol) {
-    if (localStorage.getItem(`cryptocurrency-${symbol}`)) {
+    const tooOld = this.getTooOld('cryptocurrencyDate', 5, symbol);
+    if (localStorage.getItem(`cryptocurrency-${symbol}`) && !tooOld) {
       this.setState({cryptocurrency: JSON.parse(localStorage.getItem(`cryptocurrency-${symbol}`)), isLoading: false});
       this.setState({navbarItems: this.getStateForNavbarItems(symbol)})
     } else {
@@ -73,7 +83,8 @@ class App extends Component {
   }
 
   getPrices(symbol) {
-    if (localStorage.getItem(`prices-${symbol}`)) {
+    const tooOld = this.getTooOld('pricesDate', 5, symbol);
+    if (localStorage.getItem(`prices-${symbol}`) && !tooOld) {
       this.setState({prices: JSON.parse(localStorage.getItem(`prices-${symbol}`)), graphData: JSON.parse(localStorage.getItem(`graphData-${symbol}`))});
     } else {
       axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)

@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CryptocurrencyPrice from './CryptocurrencyPrice';
-import './Cryptocurrency.css';
-import Config from '../config/config';
 import PriceChart from './PriceChart';
-
+import './Cryptocurrency.css';
 
 class Cryptocurrency extends Component {
     render() {
