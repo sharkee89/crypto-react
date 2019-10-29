@@ -56,18 +56,18 @@ class App extends Component {
   getCryptocurrencyData(symbol) {
     axios.get(`${Config.domain}/cryptocurrencies/${symbol}`)
       .then(response => {
-        axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
-          .then(res => {
-            let tempGraphData = this.getGraphData(res);
-            this.setState(this.getStateForApp(response, res, tempGraphData, symbol));
-          });
+        this.getPrices(response, symbol);
       })
       .catch(error => {
-        axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
-          .then(res => {
-            let tempGraphData = this.getGraphData(res);
-            this.setState(this.getStateForApp(null, res, tempGraphData, symbol));
-          });
+        this.getPrices(null, symbol);
+      });
+  }
+
+  getPrices(response, symbol) {
+    axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
+      .then(res => {
+        let tempGraphData = this.getGraphData(res);
+        this.setState(this.getStateForApp(response, res, tempGraphData, symbol));
       });
   }
 
