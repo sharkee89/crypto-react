@@ -53,27 +53,24 @@ class App extends Component {
     }
   }
 
-  componentDidMount() {
-    axios.get(`${Config.domain}/cryptocurrencies/BTC`)
+  getCryptocurrencyData(symbol) {
+    axios.get(`${Config.domain}/cryptocurrencies/${symbol}`)
       .then(response => {
-        axios.get(`${Config.domain}/cryptocurrencies/BTC/prices`)
+        axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
           .then(res => {
             let tempGraphData = this.getGraphData(res);
-            this.setState(this.getStateForApp(response, res, tempGraphData, 'BTC'));
+            this.setState(this.getStateForApp(response, res, tempGraphData, symbol));
           });
       });
   }
 
+  componentDidMount() {
+    this.getCryptocurrencyData('BTC');
+  }
+
   onSelectMenuItem = (symbol) => {
     this.setState({ isLoading: true });
-    axios.get(`${Config.domain}/cryptocurrencies/${symbol}`)
-      .then(response => {
-        axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
-        .then(res => {
-          let tempGraphData = this.getGraphData(res);
-          this.setState(this.getStateForApp(response, res, tempGraphData, symbol));
-        })
-      });
+    this.getCryptocurrencyData(symbol);
   }
 
   render() {
