@@ -15,35 +15,51 @@ class App extends Component {
     isLoading: true
   }
 
+  getGraphData = (res) => {
+    return {
+      labels: res.data.map((price) => {
+        return `${new Date(price.date).getDate()}.${new Date(price.date).getMonth() + 1}.${new Date(price.date).getFullYear()} ${new Date(price.date).getHours()}:${new Date(price.date).getMinutes()}`;
+      }),
+      datasets: [{
+        label: `${res.data[0].name} Prices`,
+        data: res.data.map((price) => {
+          return price.price;
+        })
+      }]
+    };
+  }
+
+  getCryptocurrencyState = (response, res) => {
+    return { 
+      name: res.data[0].name,
+      price: response.data.price,
+      rank: response.data.rank,
+      symbol: response.data.symbol,
+      marketShare: response.data.marketShare,
+      lastUpdated: response.data.lastUpdated,
+      prices: res.data 
+    }
+  }
+
+  getStateForApp = (response, res, tempGraphData, symbol) => {
+    return {
+      navbarItems: this.state.navbarItems.map(item => {
+        item.selected = item.symbol === symbol;
+        return item;
+      }),
+      cryptocurrency: this.getCryptocurrencyState(response, res),
+      isLoading: false,
+      graphData: tempGraphData
+    }
+  }
+
   componentDidMount() {
     axios.get(`${Config.domain}/cryptocurrencies/BTC`)
       .then(response => {
         axios.get(`${Config.domain}/cryptocurrencies/BTC/prices`)
           .then(res => {
-            let tempGraphData = {
-              labels: res.data.map((price) => {
-                return `${new Date(price.date).getDate()}.${new Date(price.date).getMonth() + 1}.${new Date(price.date).getFullYear()} ${new Date(price.date).getHours()}:${new Date(price.date).getMinutes()}`;
-              }),
-              datasets: [{
-                label: `${res.data[0].name} Prices`,
-                data: res.data.map((price) => {
-                  return price.price;
-                })
-              }]
-            };
-            this.setState({
-              cryptocurrency: { 
-                name: res.data[0].name,
-                price: response.data.price,
-                rank: response.data.rank,
-                symbol: response.data.symbol,
-                marketShare: response.data.marketShare,
-                lastUpdated: response.data.lastUpdated,
-                prices: res.data 
-              },
-              isLoading: false,
-              graphData: tempGraphData
-            });
+            let tempGraphData = this.getGraphData(res);
+            this.setState(this.getStateForApp(response, res, tempGraphData, 'BTC'));
           });
       });
   }
@@ -54,34 +70,8 @@ class App extends Component {
       .then(response => {
         axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
         .then(res => {
-          let tempGraphData = {
-            labels: res.data.map((price) => {
-              return `${new Date(price.date).getDate()}.${new Date(price.date).getMonth() + 1}.${new Date(price.date).getFullYear()} ${new Date(price.date).getHours()}:${new Date(price.date).getMinutes()}`;
-            }),
-            datasets: [{
-              label: `${res.data[0].name} Prices`,
-              data: res.data.map((price) => {
-                return price.price;
-              })
-            }]
-          };
-          this.setState({
-            navbarItems: this.state.navbarItems.map(item => {
-              item.selected = item.symbol === symbol;
-              return item;
-            }),
-            cryptocurrency: { 
-              name: res.data[0].name,
-              price: response.data.price,
-              rank: response.data.rank,
-              symbol: response.data.symbol,
-              marketShare: response.data.marketShare,
-              lastUpdated: response.data.lastUpdated,
-              prices: res.data 
-            },
-            isLoading: false,
-            graphData: tempGraphData
-          });
+          let tempGraphData = this.getGraphData(res);
+          this.setState(this.getStateForApp(response, res, tempGraphData, symbol));
         })
       });
   }
