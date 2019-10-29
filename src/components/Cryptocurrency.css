@@ -1,7 +1,23 @@
 .main-data {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-auto-rows: 500px;
+    grid-gap: 1em;
+    margin: 1em 0;
+}
+.main-data .details {
+    display: grid;
+    align-items: center;
+    border: 1px solid black;
+}
+.main-data .chart {
+    height: 500px;
+}
+.main-data .details .rank {
+    border: 1px solid black;
+    width: min-content;
+    border-radius: 50px;
+    padding: 0.5em;
+    justify-self: center;
 }
 .prices {
     display: grid;
@@ -11,6 +27,9 @@
 @media only screen and (max-width: 834px) {
     .main-data {
         grid-template-columns: 1fr;
+    }
+    .main-data .details {
+        padding-bottom: 2em;
     }
     .prices {
         grid-template-columns: repeat(2, 1fr);

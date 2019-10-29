@@ -16,52 +16,74 @@ class App extends Component {
   }
 
   componentDidMount() {
-    axios.get(`${Config.domain}/cryptocurrencies/BTC/prices`)
-      .then(res => {
-        let tempGraphData = {
-          labels: res.data.map((price) => {
-            return `${new Date(price.date).getDate()}.${new Date(price.date).getMonth() + 1}.${new Date(price.date).getFullYear()} ${new Date(price.date).getHours()}:${new Date(price.date).getMinutes()}`;
-          }),
-          datasets: [{
-            label: `${res.data[0].name} Prices`,
-            data: res.data.map((price) => {
-              return price.price;
-            })
-          }]
-        };
-        this.setState({
-          cryptocurrency: { name: res.data[0].name, prices: res.data },
-          isLoading: false,
-          graphData: tempGraphData
-        });
+    axios.get(`${Config.domain}/cryptocurrencies/BTC`)
+      .then(response => {
+        axios.get(`${Config.domain}/cryptocurrencies/BTC/prices`)
+          .then(res => {
+            let tempGraphData = {
+              labels: res.data.map((price) => {
+                return `${new Date(price.date).getDate()}.${new Date(price.date).getMonth() + 1}.${new Date(price.date).getFullYear()} ${new Date(price.date).getHours()}:${new Date(price.date).getMinutes()}`;
+              }),
+              datasets: [{
+                label: `${res.data[0].name} Prices`,
+                data: res.data.map((price) => {
+                  return price.price;
+                })
+              }]
+            };
+            this.setState({
+              cryptocurrency: { 
+                name: res.data[0].name,
+                price: response.data.price,
+                rank: response.data.rank,
+                symbol: response.data.symbol,
+                marketShare: response.data.marketShare,
+                lastUpdated: response.data.lastUpdated,
+                prices: res.data 
+              },
+              isLoading: false,
+              graphData: tempGraphData
+            });
+          });
       });
   }
 
   onSelectMenuItem = (symbol) => {
     this.setState({ isLoading: true });
-    axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
-      .then(res => {
-        let tempGraphData = {
-          labels: res.data.map((price) => {
-            return `${new Date(price.date).getDate()}.${new Date(price.date).getMonth() + 1}.${new Date(price.date).getFullYear()} ${new Date(price.date).getHours()}:${new Date(price.date).getMinutes()}`;
-          }),
-          datasets: [{
-            label: `${res.data[0].name} Prices`,
-            data: res.data.map((price) => {
-              return price.price;
-            })
-          }]
-        };
-        this.setState({
-          navbarItems: this.state.navbarItems.map(item => {
-            item.selected = item.symbol === symbol;
-            return item;
-          }),
-          cryptocurrency: { name: res.data[0].name, symbol: symbol, prices: res.data },
-          isLoading: false,
-          graphData: tempGraphData
-        });
-      })
+    axios.get(`${Config.domain}/cryptocurrencies/${symbol}`)
+      .then(response => {
+        axios.get(`${Config.domain}/cryptocurrencies/${symbol}/prices`)
+        .then(res => {
+          let tempGraphData = {
+            labels: res.data.map((price) => {
+              return `${new Date(price.date).getDate()}.${new Date(price.date).getMonth() + 1}.${new Date(price.date).getFullYear()} ${new Date(price.date).getHours()}:${new Date(price.date).getMinutes()}`;
+            }),
+            datasets: [{
+              label: `${res.data[0].name} Prices`,
+              data: res.data.map((price) => {
+                return price.price;
+              })
+            }]
+          };
+          this.setState({
+            navbarItems: this.state.navbarItems.map(item => {
+              item.selected = item.symbol === symbol;
+              return item;
+            }),
+            cryptocurrency: { 
+              name: res.data[0].name,
+              price: response.data.price,
+              rank: response.data.rank,
+              symbol: response.data.symbol,
+              marketShare: response.data.marketShare,
+              lastUpdated: response.data.lastUpdated,
+              prices: res.data 
+            },
+            isLoading: false,
+            graphData: tempGraphData
+          });
+        })
+      });
   }
 
   render() {
